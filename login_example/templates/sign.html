@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>登录登录</title>
+</head>
+<body>
+	<form >
+		<input name="username" placeholder="请输入用户名">
+		<input name="password" placeholder="请输入密码">
+		<button type="button" onclick="form_submission()">提交</button>  
+	</form>
+	<script src="http://code.jquery.com/jquery-1.4.1.min.js" type="text/javascript"></script>
+	<script>
+		$.fn.serializeObject = function (){
+    		var o = {};
+    		var a = this.serializeArray();
+    		$.each(a, function() {
+        		if (o[this.name]) {
+            		if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+            		}
+            		o[this.name].push(this.value || '');
+				}	
+				else {
+					o[this.name] = this.value || '';
+        		}
+    		});
+    		return o;
+		}
+
+		function form_submission(){
+			var mainstr= $("form").serializeObject();
+			window.console.log(mainstr);
+			
+             $.ajax({                  
+                    url:"/login_api/",
+                    type:'POST',
+                    dataType:'json',
+                    data:mainstr,
+                    cache: false,//上传文件无需缓存
+                    processData: false,//用于对data参数进行序列化处理 这里必须false
+                    contentType: false, //必须
+                    success:function(xclyid){
+                        
+                     },
+                     error:function (error){
+                         
+                     }
+            });
+		}
+	</script>
+</body>
+	
+</html>

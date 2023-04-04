@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>千度网盘</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',path='./css/bootstrap.css') }}">    <!--布局-->
+	<link rel="stylesheet" type="text/css" href="css/component.css" />    <!--文件上传框美化-->
+	<!--<link rel="stylesheet" type="text/css" href="css/search-form.css">   &lt;!&ndash;搜索框美化&ndash;&gt;-->
+	 <link href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">     <!--搜索框图标-->
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+	<script src="layui/layui.js" type="text/javascript" ></script>
+	<style>
+        .search form {
+            position: relative;
+            margin-top:10px;
+            width:350px;
+        }
+        .search input, button {
+            border: none;
+            outline: none;
+        }
+        .search input {
+            width: 100%;
+            height: 42px;
+            padding-left: 13px;
+        }
+        .search button {
+            height: 42px;
+            width: 42px;
+            cursor: pointer;
+            position: absolute;
+        }
+        .search {background: #7BA7AB;}
+        .search form {
+            height: 42px;
+        }
+        .search input {
+            width: 250px;
+            border-radius: 42px;
+            border: 2px solid #324B4E;
+            background: #F9F0DA;
+            transition: .3s linear;
+            float: right;
+        }
+        .search input:focus {
+            width: 300px;
+        }
+        .search button {
+            background: none;
+            top: -2px;
+            right: 0;
+        }
+        .search button:before{
+          content: "\f002";
+          font-family: FontAwesome;
+          color: #324b4e;
+        }
+	</style>
+</head>
+
+<body>
+	<!--bootstrap实现弹出模态框-->
+             <div class="modal fade"  id="Upload" aria-labelledby="myModallabel" aria-hidden="true" tabindex="-1" >
+                    <!-- 模态的对话框 -->
+                    <div class="modal-dialog">
+                        <!-- 内容部分 -->
+                        <div class="modal-content">
+                            <!-- 头部 -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">文件上传</h4>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <!-- body -->
+							<form id="formData" class="form-horizontal" action="http://127.0.0.1:8000/login_api" enctype="multipart/form-data" method="post">
+                            	<div class="modal-body">
+									<div class="form-group">
+    									<label for="name">关键词</label>
+    									<input name="keyword" type="text" class="form-control" id="keyword" placeholder="请输入关键词">
+  									</div>
+									<hr>
+  									<div class="box">
+										<input type="file" name="filename" id="file-2" class="inputfile inputfile-2" data-multiple-caption="{count} files selected" hidden="none">
+										<label for="file-2">
+											<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17">
+											<path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z" />
+											</svg>
+											<span>选择一个文件上传</span>
+										</label>
+									</div>
+								</div>
+								<!-- 尾部 -->
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+									<button class="btn btn-success" id="mainForm" type="submit" data-dismiss="modal" onclick="show_alert()">提交</button>
+                           		</div>
+        					</form>
+
+                    </div>
+                </div>
+			</div>
+	<!--主界面-->
+	<div class="container-fluid" style="height:auto" >
+		<div class="row">
+			<!--左栏-->
+			<div class="col-md-2" style="height:900px;background-color:white;position: fixed">
+    			<img src="img/qd.jpg" alt="logo" width="100%" style="margin-bottom: 30px;margin-top: 5px;">
+				<a href="#Upload" role="button" class="btn btn-lg btn-primary layui-icon layui-icon-upload-drag" data-bs-toggle="modal">上传文件</a>
+				<a style="margin-top:20px" role="button" class="btn btn-lg btn-primary layui-icon layui-icon-file" data-bs-toggle="modal">所有文件</a>
+			</div>
+
+			<!--右栏-->
+			<div class="col-md-10 offset-md-2" style="background-color:white;height: 100%;">
+				<div class="row">
+					<!--搜索栏-->
+					<div class="col-md-10 search" style="height:60px;background-color:#014D94;width:100%;position: fixed;">
+						<form action="/login" method="get">
+            				 <input type="text" placeholder="请输入您要搜索的内容...">
+            				 <button type="submit"></button>
+        				</form>
+					</div>
+				</div>
+				 <!--内容栏-->
+				<div class="row">
+					<div class="col-md-10" style="height:60px"></div> <!--占行，因为搜索栏位置固定-->
+					
+					<div class="col-md-10" style="height:590px;background-color:lightgray;width:100%; overflow:scroll;">
+						<table id="file_table" lay-filter="table_event"></table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<script src="js/custom-file-input.js"></script>  <!--文件上传框文字显示-->
+	<script>
+		function show_alert(){
+    		alert("提交成功");
+		}
+	</script>
+
+	<script type="text/html" id="download_edit">
+			<a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+			<a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+	<script>
+		layui.use("table",function(){
+			var table=layui.table;
+			table.render({
+				elem:"#file_table",
+				url:"file.json",     //请求接口
+				/*method:'post',*/
+            	toolbar: '#toolbarDemo',
+				width:1000,
+            	cols: [[
+                		
+						{field: 'fileID', width: 120, title: '文件ID', align:'center', sort: true},
+                		{field: 'fileName', width: 150, title: '文件名称', align:'center', sort: true},
+                		{field: 'fileSize', width: 140, title: '文件大小(KB)',align:'center', sort: true},
+						{field: 'uploadTime', width: 120, title: '上传时间',align:'center', sort: true},
+						{field: 'fileStatus', width: 120, title: '文件状态', align:'center', sort: true, templet: '#fileStatus',},
+						{title: '操作', Width: 100, toolbar: '#download_edit', align: "center"}
+					]],
+				limits: [10, 15, 20, 25, 50, 100],
+				limit: 10,
+				page: true,
+				parseData: function(res){ 
+					var result;
+					if(this.page.curr){
+						result = res.data.slice(this.limit*(this.page.curr-1),this.limit*this.page.curr);
+					}
+					else{
+						result=res.data.slice(0,this.limit);
+					}
+					return {
+						"code": res.code, 
+						"msg": res.msg, 
+						"count": res.count, 
+						"data": result
+					}
+				}
+			})
+			table.on('tool(table_event)', function(obj){ 
+				var data = obj.data; //获得行数据
+				var layEvent = obj.event; //获取事件
+				var tr = obj.tr; //获得当前行 tr 的 DOM 对象
+				if(layEvent === 'del'){ //删除
+					layer.confirm('确认删除', function(index){
+					obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+					layer.close(index);
+					//向服务端发送删除指令
+					});
+				}
+			});
+		});
+		
+	</script>
+	<!--<script>
+		$.fn.serializeObject = function (){
+    		var o = {};
+    		var a = this.serializeArray();
+    		$.each(a, function() {
+        		if (o[this.name]) {
+            		if (!o[this.name].push) {
+						o[this.name] = [ o[this.name] ];
+            		}
+            		o[this.name].push(this.value || '');
+				}	
+				else {
+					o[this.name] = this.value || '';
+        		}
+    		});
+    		return o;
+		}
+
+		function form_submission(){
+			var mainstr= $("form").serializeObject();
+			var formData = new FormData();
+			formData.append("3",5);
+            formData.append("file",document.getElementById("file-2").files[0]);//from表单对象 转
+            formData.append("keyword",JSON.stringify(mainstr));
+			formData.forEach((key, val) => {
+			window.console.log("key %s: value %s", key, val)
+			})
+             $.ajax({                  
+                    url:"http://baidu.com",
+                    type:'POST',
+                    dataType:'json',
+                    data:formData,
+                    cache: false,//上传文件无需缓存
+                   processData: false,//用于对data参数进行序列化处理 这里必须false
+                   contentType: false, //必须
+                    success:function(xclyid){
+                         window.top.customAlertTip("", "保存成功", "warning");
+                     },
+                     error:function (error){
+                           window.top.customAlertTip("", "保存失败", "warning");
+                     }
+            });
+		}
+	</script>-->
+</body>
+</html>
