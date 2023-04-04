@@ -1,5 +1,9 @@
 from typing import Optional
+<<<<<<< HEAD
 from fastapi import FastAPI,Body
+=======
+from fastapi import FastAPI
+>>>>>>> 213ae4ea7ebae962393706483851c69a81e4ad60
 import uvicorn
 from pydantic import BaseModel
 
@@ -13,7 +17,11 @@ app = FastAPI()
 
 @app.post("/item/{item_id}")
 async def create_item(
+<<<<<<< HEAD
         item_id:int = Body(), # 路径参数 无默认值
+=======
+        item_id:int, # 路径参数 无默认值
+>>>>>>> 213ae4ea7ebae962393706483851c69a81e4ad60
         item:Item, #
         q: Optional[str]=None
 

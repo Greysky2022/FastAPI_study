@@ -5,6 +5,7 @@
 #     b = 'b'
 #
 
+<<<<<<< HEAD
 # UserDB = {"admin": "123456", "grey": "123456"}
 # username = "admisdn"
 # password = "123456"
@@ -28,3 +29,11 @@ print(xs.y)
 
 xss = Son(1,2,3)
 print(xss.y)
+=======
+UserDB = {"admin": "123456", "grey": "123456"}
+username = "admisdn"
+password = "123456"
+
+if username in UserDB.keys():
+    print("yes")
+>>>>>>> 213ae4ea7ebae962393706483851c69a81e4ad60

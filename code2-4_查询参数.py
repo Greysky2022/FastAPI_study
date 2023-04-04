@@ -18,11 +18,19 @@ async def read_item(skip:int = 0,limit:int=10):
 #可选查询参数
 @app.get("/items2/{item_id}")
 async def read_item2(
+<<<<<<< HEAD
         item_id:str="sds", # 路径参数不能为空,就算写了默认值也是无用，请求时必须带上该参数
         q:Optional[str] = None, # 可选查询参数必须设置默认值为None
         short:bool=False
 ):
     item = {"item_id":item_id,"short":short}
+=======
+        item_id:str, # 路径参数不能为空，无默认值
+        q:Optional[str] = None, # 可选查询参数必须设置默认值为None
+        short:bool = False # 查询参数必须有默认值
+):
+    item = {"item_id":item_id}
+>>>>>>> 213ae4ea7ebae962393706483851c69a81e4ad60
     if q:
         item.update({"q":q})
     if short:
